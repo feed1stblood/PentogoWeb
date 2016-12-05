@@ -1,0 +1,265 @@
+﻿<sdk:Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:GalaSoft_MvvmLight_Command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.SL4"	xmlns:PentagoWeb_Helper="clr-namespace:PentagoWeb.Helper"	xmlns:System="clr-namespace:System;assembly=mscorlib"	xmlns:PentagoWeb_ViewModel="clr-namespace:PentagoWeb.ViewModel"	xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"	x:Class="PentagoWeb.PageGame" 
+	Title="PageGame Page"
+	d:DesignWidth="640" mc:Ignorable="d" d:DesignHeight="480">
+	<sdk:Page.Resources>
+		<toolkit:TreeViewItemIndentationConverter x:Key="string"/>
+		<PentagoWeb_Helper:BoardGridWidthConverter x:Key="BoardGridWidthConverter"/>
+		<PentagoWeb_Helper:ChessPieceConverter x:Key="ChessPieceConverter"/>
+		<Style x:Key="ListBoxItemStyle2" TargetType="ListBoxItem">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ListBoxItem">												
+						<!--<ContentPresenter x:Name="contentPresenter"  Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}"/>-->
+						<Grid Margin="0" Background="White">
+							<Image Source="{Binding State, Converter={StaticResource ChessPieceConverter}}" Margin="10" />
+							<Border BorderBrush="Black" BorderThickness="1"/>		
+		
+						</Grid>				
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<ItemsPanelTemplate x:Key="BoardItemsPanelTemplate">
+			<toolkit:WrapPanel x:Name="wrapPanel" AllowDrop="True" ItemWidth="48" ItemHeight="48"/>
+		</ItemsPanelTemplate>
+		<ItemsPanelTemplate x:Key="WholeBoardItemsTemplate">
+			<toolkit:WrapPanel ItemHeight="150"/>			
+		</ItemsPanelTemplate>
+		<Style x:Key="RotateButtonStyle2" TargetType="Button">
+			<Setter Property="Background" Value="#FF1F3B53"/>
+			<Setter Property="Foreground" Value="#FF000000"/>
+			<Setter Property="Padding" Value="3"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="BorderBrush">
+				<Setter.Value>
+					<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+						<GradientStop Color="#FFA3AEB9" Offset="0"/>
+						<GradientStop Color="#FF8399A9" Offset="0.375"/>
+						<GradientStop Color="#FF718597" Offset="0.375"/>
+						<GradientStop Color="#FF617584" Offset="1"/>
+					</LinearGradientBrush>
+				</Setter.Value>
+			</Setter>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Grid>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal"/>
+									<VisualState x:Name="MouseOver">
+										<Storyboard>
+											<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BackgroundAnimation"/>
+											<ColorAnimation Duration="0" To="#F2FFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+											<ColorAnimation Duration="0" To="#CCFFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+											<ColorAnimation Duration="0" To="#7FFFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[3].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Pressed">
+										<Storyboard>
+											<ColorAnimation Duration="0" To="#FF6DBDD1" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Background"/>
+											<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BackgroundAnimation"/>
+											<ColorAnimation Duration="0" To="#D8FFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+											<ColorAnimation Duration="0" To="#C6FFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+											<ColorAnimation Duration="0" To="#8CFFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+											<ColorAnimation Duration="0" To="#3FFFFFFF" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[3].(GradientStop.Color)" Storyboard.TargetName="BackgroundGradient"/>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Disabled"/>
+								</VisualStateGroup>
+								<VisualStateGroup x:Name="FocusStates">
+									<VisualState x:Name="Focused"/>
+									<VisualState x:Name="Unfocused"/>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<Border x:Name="Background" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="White" CornerRadius="3">
+								<Grid Background="{TemplateBinding Background}" Margin="1">
+									<Border x:Name="BackgroundAnimation" Background="#FF448DCA" Opacity="0"/>
+									<Rectangle x:Name="BackgroundGradient">
+										<Rectangle.Fill>
+											<LinearGradientBrush EndPoint=".7,1" StartPoint=".7,0">
+												<GradientStop Color="#FFFFFFFF" Offset="0"/>
+												<GradientStop Color="#F9FFFFFF" Offset="0.375"/>
+												<GradientStop Color="#E5FFFFFF" Offset="0.625"/>
+												<GradientStop Color="#C6FFFFFF" Offset="1"/>
+											</LinearGradientBrush>
+										</Rectangle.Fill>
+									</Rectangle>
+								</Grid>
+							</Border>
+							<Image Source="Resource/arrow.jpg" x:Name="contentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RenderTransformOrigin="0.5,0.5">
+								<Image.RenderTransform>
+									<CompositeTransform Rotation="90"/>
+								</Image.RenderTransform>
+							</Image>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="WholeBoardItemContainerStyle" TargetType="ListBoxItem">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ListBoxItem">
+						<Grid Height="150" Width="150" Background="Black">
+							<Grid.Resources>
+								<Storyboard x:Name="StoryboardRotateClockwise">
+									<DoubleAnimation By="90" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="listBox"/>
+								</Storyboard>
+								<Storyboard x:Name="StoryboardRotateCounterclockwise">
+									<DoubleAnimation By="-90" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="listBox"/>
+								</Storyboard>
+							</Grid.Resources>
+							<ListBox x:Name="listBox"  ItemsSource="{Binding Content}" ItemsPanel="{StaticResource BoardItemsPanelTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource ListBoxItemStyle2}" Margin="0" SelectedItem="{Binding Main.BoardContentSelectedItem, Mode=TwoWay, Source={StaticResource Locator}}" RenderTransformOrigin="0.5,0.5" IsEnabled="{Binding Main.Control.Placeable, Source={StaticResource Locator}}">
+	
+								<ListBox.RenderTransform>
+									<CompositeTransform/>
+								</ListBox.RenderTransform>
+							</ListBox>
+							<Button x:Name="BtnRotateClockwise" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource RotateButtonStyle2}" Width="70" Height="20" Visibility="{Binding Main.RotateButtonVisibility, Mode=TwoWay, Source={StaticResource Locator}}" Canvas.ZIndex="5">
+								<i:Interaction.Triggers>
+									<i:EventTrigger SourceObject="{Binding Mode=OneWay}" EventName="RotateClockwise">
+										<ei:ControlStoryboardAction x:Name="RotateClockwiseAction" Storyboard="{StaticResource StoryboardRotateClockwise}"/>
+									</i:EventTrigger>
+									<i:EventTrigger EventName="Click">
+										<GalaSoft_MvvmLight_Command:EventToCommand x:Name="HideRotateButton" Command="{Binding Mode=OneWay, Source={StaticResource Locator}}"/>
+										<GalaSoft_MvvmLight_Command:EventToCommand x:Name="BeforeRotateClockwiseEvent" Command="{Binding CmdStartRotatingClockwise}"/>
+										
+									</i:EventTrigger>
+									<ei:StoryboardCompletedTrigger Storyboard="{StaticResource StoryboardRotateClockwise}">
+										<GalaSoft_MvvmLight_Command:EventToCommand x:Name="AfterRotateEvent" Command="{Binding CmdAfterRotatingClockwise}" CommandParameter="{Binding DataContext, ElementName=listBox}" />
+									</ei:StoryboardCompletedTrigger>
+								</i:Interaction.Triggers>
+							</Button>
+							<Button x:Name="BtnRotateCounterclockwise" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Style="{StaticResource RotateButtonStyle2}" Height="70" RenderTransformOrigin="0.5,0.5" Visibility="{Binding Main.RotateButtonVisibility, Source={StaticResource Locator}}">
+								<Button.RenderTransform>
+									<CompositeTransform Rotation="-90" ScaleY="-1" TranslateX="-28" TranslateY="20"/>
+								</Button.RenderTransform>
+								<i:Interaction.Triggers>
+									<i:EventTrigger SourceObject="{Binding Mode=OneWay}" EventName="RotateCounterclockwise">
+										<ei:ControlStoryboardAction x:Name="RotateCounterlockwiseAction" Storyboard="{StaticResource StoryboardRotateCounterclockwise}"/>
+									</i:EventTrigger>
+									<i:EventTrigger EventName="Click">
+										<GalaSoft_MvvmLight_Command:EventToCommand x:Name="HideRotateButton1" Command="{Binding Mode=OneWay, Source={StaticResource Locator}}"/>
+										<GalaSoft_MvvmLight_Command:EventToCommand x:Name="BeforeRotateCounterclockwiseEvent" Command="{Binding CmdStartRotatingCounterclockwise}"/>
+									</i:EventTrigger>
+									<ei:StoryboardCompletedTrigger Storyboard="{StaticResource StoryboardRotateCounterclockwise}">
+										<GalaSoft_MvvmLight_Command:EventToCommand x:Name="AfterRotateEvent1" Command="{Binding CmdAfterRotatingCounterclockwise}" CommandParameter="{Binding DataContext, ElementName=listBox}" />
+									</ei:StoryboardCompletedTrigger>
+								</i:Interaction.Triggers>
+							</Button>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+
+	</sdk:Page.Resources>
+	
+	<Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource Locator}}" Width="640" Height="480" HorizontalAlignment="Center" VerticalAlignment="Center"  >
+		<Button x:Name="BtnComputerVsHuman" Content="ComputerVsHuman" HorizontalAlignment="Right" Height="37" Margin="0,143,9,0" VerticalAlignment="Top" Width="115" Visibility="Collapsed">
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="Click">
+					<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdStartComputerVsHuman}"/>
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+		</Button>
+		<Button x:Name="BtnComputerVsComputer" Content="ComputerVsComputer" HorizontalAlignment="Right" Height="37" Margin="0,195,10,0" VerticalAlignment="Top" Width="115" Visibility="Collapsed">
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="Click">
+					<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdStartComputerVsComputer}"/>
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+		</Button>
+		<Grid HorizontalAlignment="Right" Height="74" Margin="0,0,90,104" VerticalAlignment="Bottom" Width="143" UseLayoutRounding="False" Visibility="{Binding Main.ChaModeVisibility, Mode=OneWay}">
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="0.5
+				*"/>
+				<ColumnDefinition Width="0.5*"/>
+			</Grid.ColumnDefinitions>
+			<sdk:Label Content="Win: " HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label Content="Draw: " Grid.Row="1" HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label Content="Lose: " Grid.Row="2" HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label Content="Difficulty: " Grid.Row="3" HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label x:Name="lblWin" Grid.Column="2" Content="{Binding Main.Win, Mode=OneWay}"/>
+			<sdk:Label x:Name="lblDraw" Height="15" Width="75" Content="{Binding Main.Draw, Mode=OneWay}" Grid.Column="2" Grid.Row="1" Margin="0,1.75,-3.5,1.75"/>
+			<sdk:Label x:Name="lblLose" Content="{Binding Main.Lose, Mode=OneWay}" Grid.Column="2" Grid.Row="2"/>
+			<sdk:Label x:Name="lblDifficulty" Content="{Binding Main.Difficulty}" Grid.Column="2" Grid.Row="3"/>
+		</Grid>
+		<Grid HorizontalAlignment="Left" Height="400" Margin="25,73,0,0" VerticalAlignment="Top" Width="304">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<ListBox x:Name="listBox" HorizontalAlignment="Left" Height="304" VerticalAlignment="Top" Width="304" ItemsPanel="{StaticResource WholeBoardItemsTemplate}" ItemContainerStyle="{StaticResource WholeBoardItemContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Main.WholeBoard.Sections}"/>
+			<sdk:Label Height="67" VerticalAlignment="Bottom" FontSize="48" HorizontalContentAlignment="Center" Content="{Binding Main.GameMessage, Mode=OneWay}" HorizontalAlignment="Center" Grid.Row="1"/>
+		</Grid>
+		<StackPanel HorizontalAlignment="Right" Height="300" VerticalAlignment="Top" Width="150" Margin="0,77,86,0">
+			<Button x:Name="BtnHumanVsHuman" Content="HumanVsHuman" Padding="3,10" UseLayoutRounding="True" Margin="0,10,0,0" Visibility="{Binding Main.MenuButtonVisibility, Mode=OneWay}">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdStartHumanVsHuman}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+			<Button x:Name="BtnTrain" Content="Train with RandomPlayer" Padding="3,10" UseLayoutRounding="True" Margin="0,10,0,0" Visibility="{Binding Main.MenuButtonVisibility, Mode=OneWay}">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdVsRandom}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+			<Button x:Name="BtnChallenge" Content="Challenge mode" Padding="3,10" UseLayoutRounding="True" Margin="0,10,0,0" Visibility="{Binding Main.MenuButtonVisibility, Mode=OneWay}">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdStartChallenge}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+			<Button x:Name="BtnNextGame" Content="Next Game" Padding="3,10" UseLayoutRounding="True" Margin="0,10,0,0" Visibility="{Binding Main.NextGameButtonVisibility, Mode=OneWay}">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdNextGame}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+			<Button x:Name="BtnTryLevels" Content="Test Levels" Padding="3,10" UseLayoutRounding="True" Margin="0,10,0,0" Visibility="{Binding Main.MenuButtonVisibility, Mode=OneWay}">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<GalaSoft_MvvmLight_Command:EventToCommand Command="{Binding Main.CmdStartTestLevel}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+		</StackPanel>
+		<HyperlinkButton Content="Please do feedback here, thanks." Height="15" Margin="81,56,0,0" VerticalAlignment="Top" NavigateUri="https://docs.google.com/forms/d/1jm7-znBGcuiUa4ivarGR-7tZtT9feSRZuYXupTkBwhc/viewform" HorizontalAlignment="Left" TargetName="_blank" Width="190" Visibility="{Binding Main.SurveyLinkVisibility, Mode=OneWay}"/>
+		<Grid HorizontalAlignment="Right" Height="74" Margin="0,0,90,104" VerticalAlignment="Bottom" Width="143" UseLayoutRounding="False" Visibility="{Binding Main.TstModeVisibility, Mode=OneWay}">
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="0.5     *"/>
+				<ColumnDefinition Width="0.5*"/>
+			</Grid.ColumnDefinitions>
+			<sdk:Label Content="VS. Level 0: " HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label Content="VS. Level 3:  " Grid.Row="1" HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label Content="VS. Level 6: " Grid.Row="2" HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label Content="VS. Level 9: " Grid.Row="3" HorizontalContentAlignment="Right" Grid.ColumnSpan="1"/>
+			<sdk:Label x:Name="lblVS0" Grid.Column="2" Content="{Binding Main.LevelTestResult[0]}"/>
+			<sdk:Label x:Name="lblVS3" Height="15" Width="75" Content="{Binding Main.LevelTestResult[1]}" Grid.Column="1" Grid.Row="1" Margin="0,3.25,-3.5,0.25" d:LayoutOverrides="GridBox"/>
+			<sdk:Label x:Name="lblVS6" Content="{Binding Main.LevelTestResult[2]}" Grid.Column="1" Grid.Row="2" Margin="0,1.5,0,-1.5" d:LayoutOverrides="GridBox"/>
+			<sdk:Label x:Name="lblVS9" Content="{Binding Main.LevelTestResult[3]}" Grid.Column="2" Grid.Row="3"/>
+		</Grid>
+		<HyperlinkButton Content="Please do feedback here, thanks."  Height="15" Margin="81,56,0,0" VerticalAlignment="Top" NavigateUri="https://docs.google.com/forms/d/1Ciwqo7Ua-hzmbJ5eI29tsOXxgA4FAUxgpIbseUo-mYU/viewform" HorizontalAlignment="Left" Width="190" /><!--Visibility="{Binding Main.SurveyLink2Visibility, Mode=OneWay}"/>-->
+		<sdk:Label Height="40" Margin="0,15,290,0" VerticalAlignment="Top" FontSize="32" Content="{Binding Main.Title, Mode=OneWay}" HorizontalAlignment="Center"/>
+	</Grid>
+</sdk:Page>
