@@ -1,6 +1,6 @@
 # PentogoWeb
 AI on Pentago game, for web (silverlight)   
-Online demo 
+[Online demo](http://103.27.79.85:6687/static/pentago/TestPage.html)  
 
 # Development kit  
 Visual studio 10 with silverlight 4  
